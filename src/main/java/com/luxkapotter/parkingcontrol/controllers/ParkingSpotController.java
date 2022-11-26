@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,8 @@ public class ParkingSpotController {
 
 	@Autowired
 	private ParkingSpotService service;
-
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	@ResponseBody
 	public ResponseEntity<Object> saveParkingSpot(@RequestBody @Valid ParkingSpotDTO parkingSpotDto) {
@@ -60,6 +62,7 @@ public class ParkingSpotController {
 		return new ResponseEntity<Object>(parkingSpot, HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping
 	@ResponseBody
 	public ResponseEntity<Page<ParkingSpot>> getAllParkingSpots(
@@ -68,6 +71,7 @@ public class ParkingSpotController {
 		return new ResponseEntity<Page<ParkingSpot>>(list, HttpStatus.OK);
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	@GetMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") UUID id) {
@@ -79,7 +83,8 @@ public class ParkingSpotController {
 		}
 		return new ResponseEntity<Object>(parkingSpotOptional, HttpStatus.OK);
 	}
-
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<String> deleteParkingSpot(@PathVariable(value = "id") UUID id) {
@@ -91,6 +96,7 @@ public class ParkingSpotController {
 		return new ResponseEntity<String>("Deleted Successfully!", HttpStatus.NO_CONTENT);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	@ResponseBody
 	public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") UUID id,
